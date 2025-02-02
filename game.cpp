@@ -20,6 +20,12 @@ bool Game::get_current_map()
     if (!current_map.map_name)
         return false;
 
+    if (!strcmp(current_map.map_name, "<empty>"))
+    {
+        current_map = map_empty;
+
+        return true;
+    }
     if (!strcmp(current_map.map_name, "de_dust2"))
     {
         current_map = map_dust;
@@ -32,9 +38,9 @@ bool Game::get_current_map()
 
         return true;
     }
-    if (!strcmp(current_map.map_name, "<empty>"))
+    if (!strcmp(current_map.map_name, "de_inferno"))
     {
-        current_map = map_empty;
+        current_map = map_inferno;
 
         return true;
     }
