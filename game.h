@@ -20,6 +20,7 @@ struct map_info
 static map_info map_empty = {"<empty>", 0.f, 0.f, 0.f, 0.f};
 static map_info map_dust = {"de_dust2", -2500.f, 2000.f, -1200.f, 3250.f};
 static map_info map_mirage = {"de_mirage", -3180.f, 1800.f, -3250.f, 1900.f};
+static map_info map_inferno = {"de_inferno", -2000.f, 2780.f, -1200.f, 3850.f};
 
 class Game
 {
