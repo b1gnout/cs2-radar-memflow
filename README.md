@@ -11,8 +11,7 @@ To compile, install required libs (proper build process to come) using below:
 ```bash
 git clone https://github.com/b1gnout/cs2-radar-memflow
 cd cs2-radar-memflow
-mkdir bin
-g++ main.cpp memory.cpp render.cpp game.cpp -o bin/cs2-radar -lSDL2 -lSDL2_image  -lSDL2_gfx -std=c++17 -lmemflow_ffi
+bash build.sh
 sudo ./bin/cs2-radar 
 ```
 
