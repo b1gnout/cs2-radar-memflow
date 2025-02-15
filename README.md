@@ -2,12 +2,12 @@
 
 Radar hack for CS2 using memflow & qemu plugin.  
 
-All libs are precompiled, proper build script to come...
-
-To compile, install required libs (proper build process to come) using below:
+To compile, install required dependencies (which are ...)
 
 [Radar in-use video](https://youtu.be/_fAjWSg8nkg)
 
+
+Follow to compile & run: 
 ```bash
 git clone https://github.com/b1gnout/cs2-radar-memflow
 cd cs2-radar-memflow
