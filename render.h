@@ -26,4 +26,4 @@ void render_player_icon(render_data *render, int16_t position_x, int16_t positio
 
 void render_scene(render_data* render);
 
-void draw_dead_player_icon(render_data* render, int16_t position_x, int16_t position_y, float color_r, float color_g, float color_b);d
+void draw_dead_player_icon(render_data* render, int16_t position_x, int16_t position_y, float color_r, float color_g, float color_b);
