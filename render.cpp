@@ -22,7 +22,7 @@ bool init_render(render_data *render)
 void load_textures(render_data *render)
 {
     map_empty.map_texture = IMG_LoadTexture(render->renderer, "maps/nomap.jpg");
-    map_dust.map_texture = IMG_LoadTexture(render->renderer, "maps/de_dust2.jpg");
+    map_dust.map_texture = IMG_LoadTexture(render->renderer, "maps/dust2.jpg");
     map_mirage.map_texture = IMG_LoadTexture(render->renderer, "maps/mirage.jpg");
     map_inferno.map_texture = IMG_LoadTexture(render->renderer, "maps/inferno.jpg");
     map_overpass.map_texture = IMG_LoadTexture(render->renderer, "maps/overpass.jpg");
