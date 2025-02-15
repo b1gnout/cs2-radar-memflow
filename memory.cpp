@@ -4,7 +4,6 @@ ModuleInfo *Memory::get_module_info(const char* module_name)
 {
     ModuleInfo *target_module;
     COLLECT_CB(ModuleInfo, module_info);
-    //fails here
     mf_processinstance_module_list_callback(&process_instance, 0, module_info);
 
     for (int i = 0; i < module_info_base.size; i++)
