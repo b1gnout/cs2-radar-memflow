@@ -33,11 +33,11 @@ bool Memory::read_process_mem(void *buffer, uintptr_t addr, uintptr_t length)
 uintptr_t Memory::find_ida_pattern(ModuleInfo *module_info, const char *pattern)
 {
      static auto pattern_to_byte = [](const char* pattern) {
-        auto bytes = std::vector<int>{};
-        auto start = const_cast<char*>(pattern);
-        auto end = const_cast<char*>(pattern) + strlen(pattern);
+        std::vector<int> bytes = std::vector<int>{};
+        char* start = (char*)(pattern);
+        char* end = (char*)(pattern) + strlen(pattern);
 
-        for (auto current = start; current < end; ++current) {
+        for (char* current = start; current < end; ++current) {
             if (*current == '?') {
                 ++current;
                 if (*current == '?')
@@ -54,8 +54,8 @@ uintptr_t Memory::find_ida_pattern(ModuleInfo *module_info, const char *pattern)
     void* module_buffer = malloc(module_info->size);
     read_process_mem(module_buffer, module_info->base, module_info->size);
 
-    auto patternBytes = pattern_to_byte(pattern);
-    auto scanBytes = reinterpret_cast<std::uint8_t*>(module_buffer);
+    std::vector<int> patternBytes = pattern_to_byte(pattern);
+    uint8_t* scanBytes = (std::uint8_t*)(module_buffer);
 
     auto s = patternBytes.size();
     auto d = patternBytes.data();

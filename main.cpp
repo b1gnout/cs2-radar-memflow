@@ -49,9 +49,6 @@ int main(int argc, char *argv[])
 
         for (int i = 0; i < 128; i++)
         {
-            if (cs2_game.entities[i].health <= 0)
-                continue;
-
             vec2 radar_position = get_radar_position(cs2_game.entities[i].position, render.window_size_x, render.window_size_y, cs2_game.current_map);
 
             if (cs2_game.entities[i].team == 2)

@@ -5,7 +5,10 @@ Game::Game(Memory *mem) : process_memory(mem)
     client_dll_module = process_memory->get_module_info("client.dll");
     matchmaking_dll_module = process_memory->get_module_info("matchmaking.dll");
 
-    //entity_list_ptr = 0x15 + process_memory->find_ida_pattern(client_dll_module, "f4 f9 7f ? 00 15 ? ? ? ? 00 00 00 80");
+    uintptr_t rip = process_memory->find_ida_pattern(client_dll_module, "89 05 ? ? ? ? 4a 89 3c f2");
+    uint32_t entlist_offset = 0;
+    process_memory->read_process_mem(&entlist_offset, rip + 2, sizeof(entlist_offset));
+    entity_list_ptr = rip + entlist_offset + 14;
 }
 
 bool Game::get_current_map()
@@ -80,7 +83,7 @@ void Game::fetch_entities()
     for (int i = 0; i < 128; i++)
     {
         uintptr_t entity_ptr = 0;
-        process_memory->read_process_mem(&entity_ptr, client_dll_module->base + 0x1897228 + i * 0x8, sizeof(entity_ptr));
+        process_memory->read_process_mem(&entity_ptr, entity_list_ptr + i * 0x8, sizeof(entity_ptr));
         if (!entity_ptr)
             continue;
 
