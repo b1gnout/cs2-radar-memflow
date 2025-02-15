@@ -21,23 +21,15 @@ bool init_render(render_data *render)
 
 void load_textures(render_data *render)
 {
-    render->textures.no_map_texture = IMG_LoadTexture(render->renderer, "maps/nomap.jpg");
-
-    render->textures.ancient_radar_texture = IMG_LoadTexture(render->renderer, "maps/ancient.jpg");
-
-    render->textures.dust_radar_texture = IMG_LoadTexture(render->renderer, "maps/dust2.jpg");
-
-    render->textures.inferno_radar_texture = IMG_LoadTexture(render->renderer, "maps/inferno.jpg");
-
-    render->textures.mirage_radar_texture = IMG_LoadTexture(render->renderer, "maps/mirage.jpg");
-
-    render->textures.nuke_radar_texture = IMG_LoadTexture(render->renderer, "maps/nuke.jpg");
-
-    render->textures.overpass_radar_texture = IMG_LoadTexture(render->renderer, "maps/overpass.jpg");
-
-    render->textures.train_radar_texture = IMG_LoadTexture(render->renderer, "maps/train.jpg");
-
-    render->textures.vertigo_radar_texture = IMG_LoadTexture(render->renderer, "maps/vertigo.jpg");
+    map_empty.map_texture = IMG_LoadTexture(render->renderer, "maps/nomap.jpg");
+    map_dust.map_texture = IMG_LoadTexture(render->renderer, "maps/de_dust2.jpg");
+    map_mirage.map_texture = IMG_LoadTexture(render->renderer, "maps/mirage.jpg");
+    map_inferno.map_texture = IMG_LoadTexture(render->renderer, "maps/inferno.jpg");
+    map_overpass.map_texture = IMG_LoadTexture(render->renderer, "maps/overpass.jpg");
+    map_ancient.map_texture = IMG_LoadTexture(render->renderer, "maps/ancient.jpg");
+    map_anubis.map_texture = IMG_LoadTexture(render->renderer, "maps/anubis.jpg");
+    map_train.map_texture = IMG_LoadTexture(render->renderer, "maps/train.jpg");
+    map_office.map_texture = IMG_LoadTexture(render->renderer, "maps/office.jpg");
 }
 
 bool poll_events(render_data *render)
@@ -52,53 +44,9 @@ bool poll_events(render_data *render)
     return true;
 }
 
-void render_current_map(render_data *render, char map_name[32])
+void render_current_map(render_data *render, SDL_Texture* map_texture)
 {
-    if (!strcmp(map_name, "<empty>"))
-    {
-        SDL_RenderCopy(render->renderer, render->textures.no_map_texture, 0, 0);
-        return;
-    }
-    if (!strcmp(map_name, "de_ancient"))
-    {
-        SDL_RenderCopy(render->renderer, render->textures.ancient_radar_texture, 0, 0);
-        return;
-    }
-    if (!strcmp(map_name, "de_dust2"))
-    {
-        SDL_RenderCopy(render->renderer, render->textures.dust_radar_texture, 0, 0);
-        return;
-    }
-    if (!strcmp(map_name, "de_inferno"))
-    {
-        SDL_RenderCopy(render->renderer, render->textures.inferno_radar_texture, 0, 0);
-        return;
-    }
-    if (!strcmp(map_name, "de_mirage"))
-    {
-        SDL_RenderCopy(render->renderer, render->textures.mirage_radar_texture, 0, 0);
-        return;
-    }
-    if (!strcmp(map_name, "de_nuke"))
-    {
-        SDL_RenderCopy(render->renderer, render->textures.nuke_radar_texture, 0, 0);
-        return;
-    }
-    if (!strcmp(map_name, "de_overpass"))
-    {
-        SDL_RenderCopy(render->renderer, render->textures.overpass_radar_texture, 0, 0);
-        return;
-    }
-    if (!strcmp(map_name, "de_train"))
-    {
-        SDL_RenderCopy(render->renderer, render->textures.train_radar_texture, 0, 0);
-        return;
-    }
-    if (!strcmp(map_name, "de_vertigo"))
-    {
-        SDL_RenderCopy(render->renderer, render->textures.vertigo_radar_texture, 0, 0);
-        return;
-    }
+    SDL_RenderCopy(render->renderer, map_texture, 0, 0);
 }
 
 void render_player_icon(render_data *render, int16_t position_x, int16_t position_y, float view_angle_x, float color_r, float color_g, float color_b)
@@ -114,19 +62,19 @@ void render_player_icon(render_data *render, int16_t position_x, int16_t positio
         angle_degrees = (int)(90 - view_angle_x + 360) % 360;
     }
 
-    filledCircleRGBA(render->renderer, position_x, position_y, 6.f, color_r, color_g, color_b, 255);
+    filledCircleRGBA(render->renderer, position_x, position_y, 5.f, color_r, color_g, color_b, 255);
 
     float angle_radian = (angle_degrees - 90.f) * (M_PI) / 180.f;
 
-    float tip_x = position_x + 12.f * cos(angle_radian);
-    float tip_y = position_y + 12.f * sin(angle_radian);
+    float tip_x = position_x + 10.f * cos(angle_radian);
+    float tip_y = position_y + 10.f * sin(angle_radian);
 
     float perpendicular_angle = angle_radian + M_PI / 2.f;
 
-    float base_left_x = position_x - 6.f * cos(perpendicular_angle);
-    float base_left_y = position_y - 6.f * sin(perpendicular_angle);
-    float base_right_x = position_x + 6.f * cos(perpendicular_angle);
-    float base_right_y = position_y + 6.f * sin(perpendicular_angle);
+    float base_left_x = position_x - 5.f * cos(perpendicular_angle);
+    float base_left_y = position_y - 5.f * sin(perpendicular_angle);
+    float base_right_x = position_x + 5.f * cos(perpendicular_angle);
+    float base_right_y = position_y + 5.f * sin(perpendicular_angle);
 
     int16_t triangle_points_x[3] = {(int16_t)tip_x, (int16_t)base_left_x, (int16_t)base_right_x};
     int16_t triangle_points_y[3] = {(int16_t)tip_y, (int16_t)base_left_y, (int16_t)base_right_y};

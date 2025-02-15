@@ -30,9 +30,50 @@ bool Memory::read_process_mem(void *buffer, uintptr_t addr, uintptr_t length)
     return true;
 }
 
-bool Memory::get_process_info()
+uintptr_t Memory::find_ida_pattern(ModuleInfo *module_info, const char *pattern)
 {
-    return false;
+     static auto pattern_to_byte = [](const char* pattern) {
+        auto bytes = std::vector<int>{};
+        auto start = const_cast<char*>(pattern);
+        auto end = const_cast<char*>(pattern) + strlen(pattern);
+
+        for (auto current = start; current < end; ++current) {
+            if (*current == '?') {
+                ++current;
+                if (*current == '?')
+                    ++current;
+                bytes.push_back(-1);
+            }
+            else {
+                bytes.push_back(strtoul(current, &current, 16));
+            }
+        }
+        return bytes;
+    };
+
+    void* module_buffer = malloc(module_info->size);
+    read_process_mem(module_buffer, module_info->base, module_info->size);
+
+    auto patternBytes = pattern_to_byte(pattern);
+    auto scanBytes = reinterpret_cast<std::uint8_t*>(module_buffer);
+
+    auto s = patternBytes.size();
+    auto d = patternBytes.data();
+
+    for (auto i = 0ul; i < module_info->size - s; ++i) {
+        bool found = true;
+        for (auto j = 0ul; j < s; ++j) {
+            if (scanBytes[i + j] != d[j] && d[j] != -1) {
+                found = false;
+                break;
+            }
+        }
+        if (found) {
+            free (module_buffer);
+            return (uintptr_t)(module_info->base + i);
+        }
+    }
+    return 0;
 }
 
 bool get_os_instance(OsInstance *os_instance)

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
-#include "game.h"
 #include "render.h"
+#include "game.h"
 #include "memory.h"
 
 int main(int argc, char *argv[])
@@ -44,10 +44,10 @@ int main(int argc, char *argv[])
         if (!cs2_game.get_current_map())
             break;
 
-        render_current_map(&render, cs2_game.current_map.map_name);
+        render_current_map(&render, cs2_game.current_map.map_texture);
         cs2_game.fetch_entities();
 
-        for (int i = 0; i < 64; i++)
+        for (int i = 0; i < 128; i++)
         {
             if (cs2_game.entities[i].health <= 0)
                 continue;
@@ -62,8 +62,10 @@ int main(int argc, char *argv[])
             {
                 render_player_icon(&render, radar_position.x, radar_position.y, cs2_game.entities[i].eye_angle_x, 0, 220, 255);
             }
+
         }
 
         render_scene(&render);
+        SDL_Delay(16);
     }
 }

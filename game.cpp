@@ -4,6 +4,8 @@ Game::Game(Memory *mem) : process_memory(mem)
 {
     client_dll_module = process_memory->get_module_info("client.dll");
     matchmaking_dll_module = process_memory->get_module_info("matchmaking.dll");
+
+    //entity_list_ptr = 0x15 + process_memory->find_ida_pattern(client_dll_module, "f4 f9 7f ? 00 15 ? ? ? ? 00 00 00 80");
 }
 
 bool Game::get_current_map()
@@ -11,7 +13,6 @@ bool Game::get_current_map()
     memset(&current_map.map_name, 0, sizeof(current_map.map_name));
     uintptr_t map_name_address = 0;
     process_memory->read_process_mem(&map_name_address, matchmaking_dll_module->base + 0x1A41B0 + 0x120, sizeof(map_name_address));
-
     if (!map_name_address)
         return false;
 
@@ -23,25 +24,51 @@ bool Game::get_current_map()
     if (!strcmp(current_map.map_name, "<empty>"))
     {
         current_map = map_empty;
-
         return true;
     }
     if (!strcmp(current_map.map_name, "de_dust2"))
     {
         current_map = map_dust;
-
         return true;
     }
     if (!strcmp(current_map.map_name, "de_mirage"))
     {
         current_map = map_mirage;
-
         return true;
     }
     if (!strcmp(current_map.map_name, "de_inferno"))
     {
         current_map = map_inferno;
-
+        return true;
+    }
+    if (!strcmp(current_map.map_name, "de_overpass"))
+    {
+        current_map = map_overpass;
+        return true;
+    }
+    if (!strcmp(current_map.map_name, "de_ancient"))
+    {
+        current_map = map_ancient;
+        return true;
+    }
+    if (!strcmp(current_map.map_name, "de_anubis"))
+    {
+        current_map = map_anubis;
+        return true;
+    }
+    if (!strcmp(current_map.map_name, "de_train"))
+    {
+        current_map = map_train;
+        return true;
+    }
+    if (!strcmp(current_map.map_name, "cs_office"))
+    {
+        current_map = map_office;
+        return true;
+    }
+    if (!strcmp(current_map.map_name, "de_anubis"))
+    {
+        current_map = map_office;
         return true;
     }
 
@@ -50,10 +77,10 @@ bool Game::get_current_map()
 
 void Game::fetch_entities()
 {
-    for (int i = 0; i < 64; i++)
+    for (int i = 0; i < 128; i++)
     {
         uintptr_t entity_ptr = 0;
-        process_memory->read_process_mem(&entity_ptr, client_dll_module->base + 0x188A208 + i * 0x8, sizeof(entity_ptr));
+        process_memory->read_process_mem(&entity_ptr, client_dll_module->base + 0x1897228 + i * 0x8, sizeof(entity_ptr));
         if (!entity_ptr)
             continue;
 
