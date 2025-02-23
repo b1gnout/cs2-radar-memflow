@@ -14,7 +14,7 @@ struct Memory{
 
     ModuleInfo *get_module_info(const char* module_name);
     bool read_process_mem(void *buffer, uintptr_t addr, uintptr_t length);
-    uintptr_t find_ida_pattern(ModuleInfo* module_info, const char* pattern);
+    uint64_t find_byte_pattern(ModuleInfo* module_info, std::vector<uint8_t> pattern);
 };
 
 bool get_os_instance(OsInstance* os_instance);
