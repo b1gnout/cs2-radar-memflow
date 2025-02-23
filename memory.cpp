@@ -1,6 +1,6 @@
 #include "memory.h"
 
-ModuleInfo *Memory::get_module_info(const char* module_name)
+ModuleInfo *Memory::get_module_info(const char *module_name)
 {
     ModuleInfo *target_module;
     COLLECT_CB(ModuleInfo, module_info);
@@ -29,49 +29,35 @@ bool Memory::read_process_mem(void *buffer, uintptr_t addr, uintptr_t length)
     return true;
 }
 
-uintptr_t Memory::find_ida_pattern(ModuleInfo *module_info, const char *pattern)
+uint64_t Memory::find_byte_pattern(ModuleInfo *module_info, std::vector<uint8_t> pattern)
 {
-     static auto pattern_to_byte = [](const char* pattern) {
-        std::vector<int> bytes = std::vector<int>{};
-        char* start = (char*)(pattern);
-        char* end = (char*)(pattern) + strlen(pattern);
-
-        for (char* current = start; current < end; ++current) {
-            if (*current == '?') {
-                ++current;
-                if (*current == '?')
-                    ++current;
-                bytes.push_back(-1);
-            }
-            else {
-                bytes.push_back(strtoul(current, &current, 16));
-            }
-        }
-        return bytes;
-    };
-
-    void* module_buffer = malloc(module_info->size);
+    void *module_buffer = malloc(module_info->size);
     read_process_mem(module_buffer, module_info->base, module_info->size);
 
-    std::vector<int> patternBytes = pattern_to_byte(pattern);
-    uint8_t* scanBytes = (std::uint8_t*)(module_buffer);
+    uint64_t current_byte = 0;
+    for (uint64_t i = 0; i < module_info->size - pattern.size(); i++)
+    {
+        current_byte = (uint64_t)module_buffer + i;
+        for (uint64_t j = 0; j < pattern.size(); j++)
+        {
+            if (pattern[j] == 0x00)
+                continue;
 
-    auto s = patternBytes.size();
-    auto d = patternBytes.data();
+            //printf("checking if %#0llx byte: %#0x is %#0x\n", current_byte, *(uint8_t *)(current_byte + j), pattern[j]);
 
-    for (auto i = 0ul; i < module_info->size - s; ++i) {
-        bool found = true;
-        for (auto j = 0ul; j < s; ++j) {
-            if (scanBytes[i + j] != d[j] && d[j] != -1) {
-                found = false;
+            if (*(uint8_t *)(current_byte + j) != pattern[j])
                 break;
+
+            if (j == pattern.size() - 1)
+            {
+                free(module_buffer);
+                return module_info->base + i;
             }
         }
-        if (found) {
-            free (module_buffer);
-            return (uintptr_t)(module_info->base + i);
-        }
     }
+
+    free(module_buffer);
+
     return 0;
 }
 
@@ -100,7 +86,7 @@ bool get_os_instance(OsInstance *os_instance)
     return true;
 }
 
-bool get_process_instance(OsInstance os_instance, ProcessInstance* process_instance, char process_name[32])
+bool get_process_instance(OsInstance os_instance, ProcessInstance *process_instance, char process_name[32])
 {
     return !mf_osinstance_process_by_name(&os_instance, STR(process_name), process_instance);
 }
