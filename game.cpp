@@ -15,7 +15,7 @@ bool Game::get_current_map()
 {
     memset(&current_map.map_name, 0, sizeof(current_map.map_name));
     uintptr_t map_name_address = 0;
-    process_memory->read_process_mem(&map_name_address, matchmaking_dll_module->base + 0x1A41B0 + 0x120, sizeof(map_name_address));
+    process_memory->read_process_mem(&map_name_address, matchmaking_dll_module->base + 0x1A3190 + 0x120, sizeof(map_name_address));
     if (!map_name_address)
         return false;
 
