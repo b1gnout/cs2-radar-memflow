@@ -49,6 +49,7 @@ public:
     map_info current_map;
 
     uintptr_t entity_list_ptr = 0;
+    uintptr_t gametype_ptr = 0;
 
     bool get_current_map();
     void fetch_entities();
