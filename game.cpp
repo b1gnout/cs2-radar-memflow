@@ -5,7 +5,7 @@ Game::Game(Memory *mem) : process_memory(mem)
     client_dll_module = process_memory->get_module_info("client.dll");
     matchmaking_dll_module = process_memory->get_module_info("matchmaking.dll");
 
-    uintptr_t rip = process_memory->find_ida_pattern(client_dll_module, "89 05 ? ? ? ? 4a 89 3c f2");
+    uintptr_t rip = process_memory->find_byte_pattern(client_dll_module, {0x89, 0x05, 0x00, 0x00, 0x00, 0x00, 0x4a, 0x89, 0x3c, 0xf2});
     uint32_t entlist_offset = 0;
     process_memory->read_process_mem(&entlist_offset, rip + 2, sizeof(entlist_offset));
     entity_list_ptr = rip + entlist_offset + 14;
