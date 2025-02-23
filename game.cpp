@@ -5,17 +5,23 @@ Game::Game(Memory *mem) : process_memory(mem)
     client_dll_module = process_memory->get_module_info("client.dll");
     matchmaking_dll_module = process_memory->get_module_info("matchmaking.dll");
 
-    uintptr_t rip = process_memory->find_byte_pattern(client_dll_module, {0x89, 0x05, 0x00, 0x00, 0x00, 0x00, 0x4a, 0x89, 0x3c, 0xf2});
+    uintptr_t entlist_pattern_rip = process_memory->find_byte_pattern(client_dll_module, {0x89, 0x05, 0x00, 0x00, 0x00, 0x00, 0x4a, 0x89, 0x3c, 0xf2});
     uint32_t entlist_offset = 0;
-    process_memory->read_process_mem(&entlist_offset, rip + 2, sizeof(entlist_offset));
-    entity_list_ptr = rip + entlist_offset + 14;
+    process_memory->read_process_mem(&entlist_offset, entlist_pattern_rip + 2, sizeof(entlist_offset));
+    entity_list_ptr = entlist_pattern_rip + entlist_offset + 14;
+
+    uintptr_t gametype_pattern_rip = process_memory->find_byte_pattern(client_dll_module, {0x75, 0x5B, 0x48, 0x8B, 0x0D});
+    uint32_t gametype_offset = 0;
+    process_memory->read_process_mem(&gametype_offset, gametype_pattern_rip + 5, sizeof(gametype_offset));
+
+    process_memory->read_process_mem(&gametype_ptr, gametype_pattern_rip + gametype_offset + 9, sizeof(gametype_ptr));
 }
 
 bool Game::get_current_map()
 {
     memset(&current_map.map_name, 0, sizeof(current_map.map_name));
     uintptr_t map_name_address = 0;
-    process_memory->read_process_mem(&map_name_address, matchmaking_dll_module->base + 0x1A3190 + 0x120, sizeof(map_name_address));
+    process_memory->read_process_mem(&map_name_address, gametype_ptr + 0x120, sizeof(map_name_address));
     if (!map_name_address)
         return false;
 
