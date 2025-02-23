@@ -43,8 +43,6 @@ uint64_t Memory::find_byte_pattern(ModuleInfo *module_info, std::vector<uint8_t>
             if (pattern[j] == 0x00)
                 continue;
 
-            //printf("checking if %#0llx byte: %#0x is %#0x\n", current_byte, *(uint8_t *)(current_byte + j), pattern[j]);
-
             if (*(uint8_t *)(current_byte + j) != pattern[j])
                 break;
 
